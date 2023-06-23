@@ -44,7 +44,7 @@ Create a database named library and create following TABLES in the database:
                         
                         select * from customer;
 
-4. IssueStatus
+4. IssueStatus 
        Issue_Id - Set as PRIMARY KEY
        Issued_cust – Set as FOREIGN KEY and it refer customer_id in CUSTOMER table
        Issued_book_name
