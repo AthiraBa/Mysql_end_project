@@ -1,0 +1,145 @@
+Create a database named library and create following TABLES in the database:
+
+          create database library;
+          use library;
+
+1. Branch
+     Branch_no - Set as PRIMARY KEY
+     Manager_Id
+     Branch_address
+     Contact_no
+        
+              create table branch(branch_no int primary key,manager_id int,branch_address varchar(20),contact_no varchar(10));
+              insert into branch values(123,23,'bio science',7890345789),(124,23,'mathematics',8751230986),(125,23,'chemistry',7796435370),
+              (126,23,'physics',7987434664),(127,41,'commerce',3456576587),(128,30,'history',5197357443),(133,30,'politics',4457789031),
+              (130,30,'geography',7981350723);
+              
+              select * from branch;
+
+2. Employee
+     Emp_Id – Set as PRIMARY KEY
+     Emp_name
+     Position
+     Salary
+
+              create table employee(emp_id int primary key,emp_name varchar(20),position varchar(10),salary int);
+              insert into employee values(23,'Mia','manager',35000),(30,'Anna','librarian',50000),(41,'Emily','sweper',20000),
+              (38,'James','watchman',20000),(36,'Emma','librarian',50000),(40,'William','watchman',20000),(35,'Daniel','clerk',35000);
+
+              select * from employee;
+
+3. Customer
+       Customer_Id - Set as PRIMARY KEY
+       Customer_name
+       Customer_address
+       Reg_date
+
+              create table customer(customer_id int primary key,customer_name varchar(20),customer_address varchar(20),reg_date date);
+
+              insert into customer values(1001,'Jacob','abc','2022-01-23'),(1002,'Olivia','def','2022-08-30'),(1003,'Henry','hij','2022-06-16'),
+              (1004,'krishna','klm','2023-06-25'),(1005,'Elizabeth','nop','2022-06-18'),(1006,'Joseph','fjbf','2021-08-30'),(1007,'Jack','uii','2021-05-03');
+              
+              select * from customer;
+
+4. IssueStatus
+       Issue_Id - Set as PRIMARY KEY
+       Issued_cust – Set as FOREIGN KEY and it refer customer_id in CUSTOMER table
+       Issued_book_name
+       Issue_date
+       Isbn_book – Set as FOREIGN KEY and it should refer isbn in BOOKS table
+
+                create table issue_status(issue_id int primary key,issued_book_name varchar(50),issue_date date,issued_cust int,isbn_book varchar(40),
+                 foreign key(issued_cust) references customer(customer_id), foreign key(isbn_book) references books(isbn));
+
+                 insert into issue_status values(567,'Sapiens: A Brief History of Humankind','2023-06-09',1003,978-0062316097),
+                 (416,'Zero: The Biography of a Dangerous Idea','2022-05-01',1004,978-0670884575),
+                 (243,'A Brief History of Time','2022-12-09',1002,978-0-553-10953-5),
+                 (659,'India: A History','2023-01-30',1004,0451208637),
+                 (540,'Zero: The Biography of a Dangerous Idea','2023-05-22',1002,978-0670884575);
+
+                 select * from issue_status;
+
+             
+
+5. ReturnStatus
+       Return_Id - Set as PRIMARY KEY
+       Return_cust
+       Return_book_name
+       Return_date
+       Isbn_book2 - Set as FOREIGN KEY and it should refer isbn in BOOKS table
+
+             create table return_status(return_id int primary key,return_cust int,return_book_name varchar(50),return_date date,isbn_book2 varchar(30),
+             foreign key(isbn_book2) references books(isbn));
+
+             insert into return_status values(164,1004,'Zero: The Biography of a Dangerous Idea','2023-06-17',978-0670884575),(213,1005,'Guns, Germs, and Steel','2024-03-04',0-393-03891-2),
+             (870,1003,'A Brief History of Time','2023-04-30',978-0-553-10953-5),(658,1004,'Sapiens: A Brief History of Humankind','2023-05-21',978-0062316097),
+             (910,1002,'A Brief History of Time','2023-06-21',978-0-553-10953-5);
+             
+             select * from return_status;
+6. Books
+       ISBN - Set as PRIMARY KEY
+       Book_title
+       Category
+       Rental_Price
+       Status [Give yes if book available and no if book not available]
+       Author
+       Publisher
+
+
+                    create table books(isbn varchar(30) primary key,book_title varchar(50),category varchar(40),rental_price float,status varchar(10) default 'yes' check (status in('yes','no')),
+                    author varchar(30),publisher varchar(30));
+                    insert into books values(978-0062316097,'Sapiens: A Brief History of Humankind','narrative history',940.4,'yes','Yuval Noah Harari','Dvir Publishing House'),
+                    (0-393-03891-2,'Guns, Germs, and Steel','Environmental history',303.421,'no','Jared Diamond,','W. W. Norton'),
+                    (9780674637528,'On the Origin of Species',"scientific literature",502 ,'no','Charles Darwin','John Murray' ),
+                    (0451208637,"India: A History",'narrative history',426.00,'yes','Jhon Keay','Simon & Schuster.'),
+                    (978-0-553-10953-5,'A Brief History of Time','theoretical cosmology',523.121,'no','Stephen Hawking',"Bantam Dell Publishing Group"),
+                    (978-0670884575,"Zero: The Biography of a Dangerous Idea",'non-fiction',426.00,'yes','Charles Seife','Viking Adult');
+                    
+                    select * from books;
+
+Write the queries for the following:
+1. Retrieve the book title, category, and rental price of all available books.
+
+                              select book_title,category,rental_price from books where status='yes';
+
+2. List the employee names and their respective salaries in descending order of salary.
+
+                              select emp_name,salary from employee order by salary desc;
+                              
+3. Retrieve the book titles and the corresponding customers who have issued those books.
+
+                              select issue_status.issued_book_name,customer.customer_name from customer inner join issue_status where customer_id=issued_cust;
+
+4. Display the total count of books in each category.
+
+                              select category, count(*) from books group by category;
+
+5. Retrieve the employee names and their positions for the employees whose salaries are above Rs.50,000.
+
+                              select emp_name,position from employee where salary>=50000;
+
+6. List the customer names who registered before 2022-01-01 and have not issued any books yet.
+
+                              select customer_name from customer where (reg_date<'2023-01-01' and customer_id not in (select issued_cust from issue_status));
+
+7. Display the branch numbers and the total count of employees in each branch.
+
+                              select branch.branch_no,count(employee.emp_id) from branch inner join employee on branch.manager_id=employee.emp_id group by branch_no;
+
+8. Display the names of customers who have issued books in the month of June 2023.
+
+                              select customer.customer_name from customer inner join issue_status on customer.customer_id=issue_status.issued_cust where monthname(issue_date)= 'june' and year(issue_date)= 2023;
+
+9. Retrieve book_title from book table containing history.
+
+                              select book_title from books where book_title like '%history%';
+
+10. Retrieve the branch numbers along with the count of employees for branches having more than 5 employees.
+
+                              select branch.branch_no,count(employee.emp_id) from 
+                              branch inner join employee on branch.manager_id=employee.emp_id 
+                              group by branch_no having count(employee.emp_id)>5;
+                                
+
+
+
